@@ -1,0 +1,24 @@
+#!/usr/bin/env python3
+
+# http://stackoverflow.com/questions/7243750/download-file-from-web-in-python-3
+import urllib.request
+import urllib.parse
+import feedparser
+
+# url="http://feeds.feedburner.com/BsdNowMp3"
+url="http://feeds.feedburner.com/techsnapmp3"
+feed = feedparser.parse(url)
+foldername = feed.feed.title
+print(foldername)
+
+
+for i in feed.entries:
+    print(i.title)
+    for j in i.links:
+        if "audio" in j.type or "video" in j.type:
+            url=j.href
+            filename=urllib.parse.urlparse(url)
+            filename=filename.path.split('/')[-1]
+            print(url)
+            # urllib.request.urlretrieve(url, filename)
+    print("\n")
