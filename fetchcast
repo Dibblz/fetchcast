@@ -35,18 +35,21 @@ def fetchPodcast(url):
     for i in range(TMP_RANGE):
         if i >= max_iter:
             break
-        print(feed.entries[i].title)
 
         for j in feed.entries[i].links:
+            # If the dictionary does not contain the key "type" then
+            # continue with the other indeces of the list
+            if "type" not in j:
+                continue
             if "audio" in j.type or "video" in j.type:
                 url_download=j.href
                 file_name=urllib.parse.urlparse(url_download)
                 file_name=file_name.path.split('/')[-1]
                 # Check if file exists, if it does then do NOT download again
                 if os.path.isfile(dir_name + "/" + file_name):
-                    print("The file already exists. Do not download.")
+                    print(feed.entries[i].title + ": The file already exists. Do not download.")
                 else:
-                    print("Downloading the file...")
+                    print(feed.entries[i].title + ": Downloading the file...")
                     urllib.request.urlretrieve(url_download, dir_name + "/" + file_name)
 
     ##################################
