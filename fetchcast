@@ -9,69 +9,66 @@ import os
 ###############
 # Global vars #
 ###############
-TMP_RANGE = 4
-TMP_FILE = "feeds.txt"
+BRANGE = True
+RANGE = 10
+FEEDS_FILE = "feeds.txt"
 
 #############
 # Functions #
 #############
-# Get the URL of the podcast and download all podcasts
+# Download the podcasts
+def fetchDownload(feed, dir_name, i, j):
+    # If the dictionary does not contain the key "type" then
+    # continue with the other indeces of the list
+    if "type" not in j:
+        return
+    if "audio" in j.type or "video" in j.type:
+        url_download=j.href
+        file_name=urllib.parse.urlparse(url_download)
+        file_name=file_name.path.split('/')[-1]
+        # Check if file exists, if it does then do NOT download again
+        if os.path.isfile(dir_name + "/" + file_name):
+            print(feed.entries[i].title + ": The file already exists. Do not download.")
+        else:
+            print(feed.entries[i].title + ": Downloading the file...")
+            urllib.request.urlretrieve(url_download, dir_name + "/" + file_name)
+
+# Find the URL to download the podcasts
 def fetchPodcast(url):
     feed = feedparser.parse(url)
     dir_name = feed.feed.title
-    print("\n")
-    print(dir_name)
 
-    # Create directory (if it does not exist) to save all
-    # podcasts for this feed
+    # Create directory (if it does not exist)
+    # to download all podcasts to
     if not os.path.exists(dir_name):
         os.makedirs(dir_name)
 
-    #####################################################
-    # Option A                                          #
-    # Only download the last X amount of files per feed #
-    #####################################################
-    max_iter = len(feed.entries)
-    for i in range(TMP_RANGE):
-        if i >= max_iter:
-            break
-
-        for j in feed.entries[i].links:
-            # If the dictionary does not contain the key "type" then
-            # continue with the other indeces of the list
-            if "type" not in j:
-                continue
-            if "audio" in j.type or "video" in j.type:
-                url_download=j.href
-                file_name=urllib.parse.urlparse(url_download)
-                file_name=file_name.path.split('/')[-1]
-                # Check if file exists, if it does then do NOT download again
-                if os.path.isfile(dir_name + "/" + file_name):
-                    print(feed.entries[i].title + ": The file already exists. Do not download.")
-                else:
-                    print(feed.entries[i].title + ": Downloading the file...")
-                    urllib.request.urlretrieve(url_download, dir_name + "/" + file_name)
+    ###################################
+    # Option A                        #
+    # Only download the last X amount #
+    # of files on the feed            #
+    ###################################
+    if BRANGE:
+        max_iter = len(feed.entries)
+        for i in range(RANGE):
+            if i >= max_iter:
+                break
+            for j in feed.entries[i].links:
+                fetchDownload(feed, dir_name, i, j)
 
     ##################################
     # Option B                       #
     # Download all files on the feed #
     ##################################
-    # for i in feed.entries:
-    #     print(i.title)
-    #     for j in i.links:
-    #         if "audio" in j.type or "video" in j.type:
-    #             url=j.href
-    #             file_name=urllib.parse.urlparse(url)
-    #             file_name=file_name.path.split('/')[-1]
-    #             print(url)
-    #             # urllib.request.urlretrieve(url, dir_name/file_name)
-
+    else:
+        for i in range(len(feed.entries)):
+            for j in feed.entries[i].links:
+                fetchDownload(feed, dir_name, i, j)
 
 ########
 # MAIN #
 ########
-file = open(TMP_FILE, 'r')
-# Read the file with the podcasts and iterate over all the feeds
+file = open(FEEDS_FILE, 'r')
 for line in file:
     if line[0] is not '#':
         #TODO: Sanitize, make sure the line is a valid URL

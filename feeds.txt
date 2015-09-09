@@ -1,12 +1,12 @@
 # BSDNow
 http://feeds.feedburner.com/BsdNowMp3
 # TechSnap
-# http://feeds.feedburner.com/techsnapmp3
+http://feeds.feedburner.com/techsnapmp3
 # Security Now
-# http://leoville.tv/podcasts/sn.xml
+http://leoville.tv/podcasts/sn.xml
 # Coder Radio
-# http://feeds.feedburner.com/coderradiomp3
+http://feeds.feedburner.com/coderradiomp3
 # Linux Unplugged
-# http://feeds.feedburner.com/linuxunplugged
+http://feeds.feedburner.com/linuxunplugged
 # Linux Action Show
 http://feeds2.feedburner.com/TheLinuxActionShow
