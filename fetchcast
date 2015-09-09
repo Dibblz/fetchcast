@@ -1,24 +1,75 @@
 #!/usr/bin/env python3
-
 # http://stackoverflow.com/questions/7243750/download-file-from-web-in-python-3
+
 import urllib.request
 import urllib.parse
 import feedparser
+import os
 
-# url="http://feeds.feedburner.com/BsdNowMp3"
-url="http://feeds.feedburner.com/techsnapmp3"
-feed = feedparser.parse(url)
-foldername = feed.feed.title
-print(foldername)
+###############
+# Global vars #
+###############
+TMP_RANGE = 4
+TMP_FILE = "feeds.txt"
 
-
-for i in feed.entries:
-    print(i.title)
-    for j in i.links:
-        if "audio" in j.type or "video" in j.type:
-            url=j.href
-            filename=urllib.parse.urlparse(url)
-            filename=filename.path.split('/')[-1]
-            print(url)
-            # urllib.request.urlretrieve(url, filename)
+#############
+# Functions #
+#############
+# Get the URL of the podcast and download all podcasts
+def fetchPodcast(url):
+    feed = feedparser.parse(url)
+    dir_name = feed.feed.title
     print("\n")
+    print(dir_name)
+
+    # Create directory (if it does not exist) to save all
+    # podcasts for this feed
+    if not os.path.exists(dir_name):
+        os.makedirs(dir_name)
+
+    #####################################################
+    # Option A                                          #
+    # Only download the last X amount of files per feed #
+    #####################################################
+    max_iter = len(feed.entries)
+    for i in range(TMP_RANGE):
+        if i >= max_iter:
+            break
+        print(feed.entries[i].title)
+
+        for j in feed.entries[i].links:
+            if "audio" in j.type or "video" in j.type:
+                url_download=j.href
+                file_name=urllib.parse.urlparse(url_download)
+                file_name=file_name.path.split('/')[-1]
+                # Check if file exists, if it does then do NOT download again
+                if os.path.isfile(dir_name + "/" + file_name):
+                    print("The file already exists. Do not download.")
+                else:
+                    print("Downloading the file...")
+                    urllib.request.urlretrieve(url_download, dir_name + "/" + file_name)
+
+    ##################################
+    # Option B                       #
+    # Download all files on the feed #
+    ##################################
+    # for i in feed.entries:
+    #     print(i.title)
+    #     for j in i.links:
+    #         if "audio" in j.type or "video" in j.type:
+    #             url=j.href
+    #             file_name=urllib.parse.urlparse(url)
+    #             file_name=file_name.path.split('/')[-1]
+    #             print(url)
+    #             # urllib.request.urlretrieve(url, dir_name/file_name)
+
+
+########
+# MAIN #
+########
+file = open(TMP_FILE, 'r')
+# Read the file with the podcasts and iterate over all the feeds
+for line in file:
+    if line[0] is not '#':
+        #TODO: Sanitize, make sure the line is a valid URL
+        fetchPodcast(line)
