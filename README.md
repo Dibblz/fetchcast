@@ -1,6 +1,6 @@
 # FetchCast: Automatically download your favorite podcasts
 
-This program depends on **feedparser** (a python module) and **Python 3**. The inspiration for this program was being able to run it periodically on my NAS to later watch them from any device on my network.
+This program depends on **feedparser** (a python module) and **Python 3**. The inspiration for this program was being able to run it periodically on my NAS to later watch the podcasts from any device on my network.
 
 ## How to run
 1. Add your favorite feeds to `feeds.txt`
