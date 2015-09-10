@@ -35,8 +35,12 @@ def fetchDownload(feed, dir_name, i, j):
 
 # Find the URL to download the podcasts
 def fetchPodcast(url):
-    feed = feedparser.parse(url)
-    dir_name = feed.feed.title
+    try:
+        feed = feedparser.parse(url)
+        dir_name = feed.feed.title
+    except:
+        print("Please check that the following URL is correct: " + url)
+        return
 
     # Create directory (if it does not exist)
     # to download all podcasts to
@@ -71,5 +75,5 @@ def fetchPodcast(url):
 file = open(FEEDS_FILE, 'r')
 for line in file:
     if line[0] is not '#':
-        #TODO: Sanitize, make sure the line is a valid URL
-        fetchPodcast(line)
+        # fetchPodcast(line)
+        print(line)
