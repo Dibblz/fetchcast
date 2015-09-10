@@ -14,7 +14,7 @@ from subprocess import call
 BRANGE = True
 RANGE = 10
 FEEDS_FILE = "feeds.txt"
-LOCK = "/tmp/" + os.path.basename(__file__) + ".lock"
+LOCK = "/tmp/fetchcast.lock"
 
 #############
 # Functions #
